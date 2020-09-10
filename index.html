@@ -6,6 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- <link href="css/style.css" rel="stylesheet"> -->
         <style>
+            body {
+                font-family: Calibri, Tahoma, Roboto, sans-serif;
+                background-color: #243447;
+                color: cyan;
+            }
             .container {
                 margin: auto;
                 display: flex;
@@ -16,12 +21,21 @@
             }
             
             .container > * {
-                width: 40%;
+                text-align: center;
+                width: 60%;
+                
             }
 
-            input[type="submit"] {
-                background-color:  burlywood;
+            input[type="text"] {
+                margin: auto;
+            }
+            #add-todo {
+                background-color: #7186a0;
                 font-weight: bold;
+                margin: auto;
+                color: cyan;
+                border-radius: 5px;
+                margin-top: .5em;
             }
 
             li {
@@ -33,21 +47,22 @@
                 flex-direction: row;
                 flex-wrap: wrap-reverse;
                 /* flex-flow: row wrap */
+                position: relative;
+                left: -1.2em;
             }
 
             .flex-item {
-                background-color: burlywood;
+                background-color: #7186a0;
                 border: 1px solid black;
                 text-align: center;
-                padding: 0.5em;
                 width: 100%;
-
+                margin: 0.1em;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <!-- <label for="todo"></label> -->
+            <h1>My To-Do List</h1>
             <input id="todo-title" type="text" name="todo-title" placeholder="title" required>
             <input id="todo-desc" type="text" name="todo-desc" placeholder="description">
             <button id="add-todo">+Add</button>
@@ -104,12 +119,20 @@
                 todoList.innerHTML = '';
                 for(let i=0; i<tempDb.length; i++) {
                     let li = document.createElement('li');
+                    let div = document.createElement('div');
                     li.setAttribute('class', 'flex-item')
-                    let title = document.createTextNode(tempDb[i].title);
-                    let desc = document.createTextNode(tempDb[i].desc);
-                    li.appendChild(title);
-                    li.innerHTML += '<br />';
-                    li.appendChild(desc);
+                    let titleText = document.createTextNode(tempDb[i].title);
+                    let descText = document.createTextNode(tempDb[i].desc);
+                    
+                    let heading = document.createElement('h4');
+                    let p = document.createElement('p');
+                    heading.appendChild(titleText);
+                    p.appendChild(descText);
+
+                    div.appendChild(heading)
+                    div.appendChild(p)
+
+                    li.appendChild(div);
                     todoList.appendChild(li);
                 }
             }
