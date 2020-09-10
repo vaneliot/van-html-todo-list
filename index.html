@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>To Do List</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <link href="css/style.css" rel="stylesheet"> -->
+        <style>
+            .container {
+                margin: auto;
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: column;
+                align-content: center;
+                
+            }
+            
+            .container > * {
+                width: 40%;
+            }
+
+            input[type="submit"] {
+                background-color:  burlywood;
+                font-weight: bold;
+            }
+
+            li {
+                list-style-type: none;
+            }
+
+            .flex-container {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap-reverse;
+                /* flex-flow: row wrap */
+            }
+
+            .flex-item {
+                background-color: burlywood;
+                border: 1px solid black;
+                text-align: center;
+                padding: 0.5em;
+                width: 100%;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- <label for="todo"></label> -->
+            <input id="todo-title" type="text" name="todo-title" placeholder="title" required>
+            <input id="todo-desc" type="text" name="todo-desc" placeholder="description">
+            <button id="add-todo">+Add</button>
+            <br/ >
+            <ul id="todo-list" class="flex-container">
+                
+            </ul>
+        </div>
+        <script>
+            var db = window.localStorage;
+            // var todos = [
+            //     {
+            //         title: 'do homework',
+            //         desc: 'yea'
+            //     },
+            //     {
+            //         title: 'foo',
+            //         desc: 'bar'
+            //     }
+            // ];
+
+            // db.setItem("todos", JSON.stringify(todos));
+            let todos = JSON.parse(db.getItem('todos')) != null ? JSON.parse(db.getItem('todos')) : []; 
+            
+            var todoTitle = document.querySelector('#todo-title');
+            var todoDesc = document.querySelector('#todo-desc');
+            var addTodoBtn = document.querySelector('#add-todo');
+
+            var todoList = document.querySelector('#todo-list');
+
+            console.log(db);
+
+            class Todo {
+                constructor(title, desc) {
+                    this.title = title
+                    this.desc = desc
+                }
+            }
+
+            var addTodo = () => {
+                console.log('foo');
+                let newTodo = new Todo(todoTitle.value, todoDesc.value);
+                // console.log(newTodo);
+                todos.push(newTodo);
+                db.setItem("todos", JSON.stringify(todos));
+                loadToList(todos)
+            }
+
+            addTodoBtn.addEventListener('click', addTodo)
+
+
+            // load todos from db to todos array
+            var loadToList = (tempDb) => {
+                todoList.innerHTML = '';
+                for(let i=0; i<tempDb.length; i++) {
+                    let li = document.createElement('li');
+                    li.setAttribute('class', 'flex-item')
+                    let title = document.createTextNode(tempDb[i].title);
+                    let desc = document.createTextNode(tempDb[i].desc);
+                    li.appendChild(title);
+                    li.innerHTML += '<br />';
+                    li.appendChild(desc);
+                    todoList.appendChild(li);
+                }
+            }
+
+            // upon page load
+           
+            let tempDb = JSON.parse(db.getItem('todos'));
+            if(tempDb != null) {
+                loadToList(tempDb);
+            }
+
+
+            // Execute a function when the user releases a key on the keyboard
+            // todoTitle.addEventListener("keyup", function (e) {
+            //     // Number 13 is the "Enter" key on the keyboard
+            //     if (e.keyCode === 13) {
+            //         // Cancel the default action, if needed
+            //         e.preventDefault();
+            //         // Trigger the button element with a click
+            //         todoTitle.click();
+            //     }
+            // }); 
+        </script>
+    </body>
+</html>
