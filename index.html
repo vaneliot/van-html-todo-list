@@ -9,7 +9,7 @@
             body {
                 font-family: Calibri, Tahoma, Roboto, sans-serif;
                 background-color: #243447;
-                color: cyan;
+                color: #F9E9E9;
             }
             .container {
                 margin: auto;
@@ -29,6 +29,8 @@
             input[type="text"] {
                 margin: auto;
                 border-radius: 10px;
+                margin-bottom: 0.3em;
+                padding: 0.3em;
             }
             #add-todo {
                 background-color: #7186a0;
@@ -37,16 +39,28 @@
                 color: cyan;
                 border-radius: 2px;
                 margin-top: .5em;
+                padding: 0.3em;
+            }
+
+            @keyframes fade-in {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes fade-out {
+                from { opacity: 1; }
+                to { opacity: 0; }
             }
 
             li {
                 list-style-type: none;
+                animation: fade-in .25s forwards;
             }
 
             .flex-container {
                 display: flex;
                 flex-direction: row;
-                flex-wrap: wrap;
+                flex-wrap: wrap-reverse;
                 /* flex-flow: row wrap */
                 position: relative;
                 left: -1.2em;
@@ -59,6 +73,12 @@
                 width: 100%;
                 margin: 0.1em;
                 padding-bottom: 0.7em;
+            }
+
+            .delete-btn {
+                background-color: crimson;
+                color: #E9E9E9;
+                margin: 0.2em 1em 0.2em;
             }
         </style>
     </head>
@@ -105,19 +125,26 @@
             class Todo {
                 constructor(title, desc) {
                     this.id = new Date().getTime();
-                    this.title = title
-                    this.desc = desc
-                    this.done = false
+                    this.title = title;
+                    this.desc = desc;
+                    this.done = false;
+                    this.dateCreated = new Date().toTimeString();
                 }
             }
 
             var addTodo = () => {
                 console.log('foo');
-                let newTodo = new Todo(todoTitle.value, todoDesc.value);
-                // console.log(newTodo);
-                todos.push(newTodo);
-                db.setItem("todos", JSON.stringify(todos));
-                loadToList(todos)
+                if(todoTitle.value) {
+                    let newTodo = new Todo(todoTitle.value, todoDesc.value);
+                    // console.log(newTodo);
+                    todos.push(newTodo);
+                    db.setItem("todos", JSON.stringify(todos));
+                    // loadToList(todos);   // earlier impl
+                    todoList.appendChild(createTodoNode(newTodo));
+                    todoTitle.value = todoDesc.value = '';
+                } else {
+                    alert("Todo title can't be empty :)");
+                }
             }
 
             addTodoBtn.addEventListener('click', addTodo)
@@ -131,47 +158,55 @@
                 }
             }
 
-            var createTodoNode = (temp) => {
+            var createTodoNode = (todo) => {
                 let li = document.createElement('li');
                 let div = document.createElement('div');
 
                 li.setAttribute('class', 'flex-item');
 
-                let titleText = document.createTextNode(temp.title);
-                let descText = document.createTextNode(temp.desc);
+                let titleText = document.createTextNode(todo.title);
+                let descText = document.createTextNode(todo.desc);
+                let dateText = document.createTextNode(todo.dateCreated);
 
-                let heading = document.createElement('h4');
+                let heading = document.createElement('h3');
                 let p = document.createElement('p');
+                let dateSpan = document.createElement('span');
 
                 let checkBox = document.createElement('input');
                 checkBox.setAttribute('type', 'checkbox');
 
                 let deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = 'delete';
-                deleteBtn.setAttribute('onclick', 'deleteTodo(' + temp.id + ')');
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.setAttribute('onclick', 'deleteTodo(' + todo.id + ')');
 
-                checkBox.setAttribute('id', 'todo-'+temp.id);
-                checkBox.checked = temp.done;
+                checkBox.setAttribute('id', 'todo-'+todo.id);
+                checkBox.checked = todo.done;
                 
-                checkBox.setAttribute('onchange', 'updateDoneStatus(' + temp.id + 
-                // ', ' + checkBox.checked + 
-                ')');
+                checkBox.setAttribute('onchange', 'toggleDone(' + todo.id + ')');
 
                 heading.appendChild(titleText);
                 p.appendChild(descText);
+                dateSpan.appendChild(dateText);
 
                 div.appendChild(heading);
                 div.appendChild(p);
+                div.appendChild(dateSpan);
+                div.appendChild(document.createElement('hr'));
                 div.appendChild(checkBox);
+                
+
+                let markDoneText = document.createTextNode('mark as done');
+                div.appendChild(markDoneText);
                 div.appendChild(deleteBtn);
 
-                console.log(temp.id);
+                console.log(todo.id);
                 li.appendChild(div);
-                li.setAttribute('id', 'todo-'+temp.id);
+                li.setAttribute('id', 'todo-'+todo.id);
                 return li;         
             }
 
-            var updateDoneStatus = (id) => {
+            var toggleDone = (id) => {
                 console.log('updated');
                 let tempTodos = JSON.parse(db.getItem('todos'));
                 tempTodos.forEach((element, index) => {
@@ -184,15 +219,17 @@
             }
 
             var deleteTodo = (id) => {
-                // remove from localStorage
-                db.setItem('todos', JSON.stringify(JSON.parse(db.getItem('todos')).filter((todo) => {
-                    return todo.id !== id;
-                })));
+                if(confirm('Are you sure you want to delete?')) {
+                    // remove from localStorage
+                    db.setItem('todos', JSON.stringify(JSON.parse(db.getItem('todos')).filter((todo) => {
+                        return todo.id !== id;
+                    })));
 
-                // update UI
-                let li = document.querySelector('#todo-' + id);
-                li.parentNode.removeChild(li);
-                console.log('deleted item with id ' + id);
+                    // update UI
+                    let li = document.querySelector('#todo-' + id);
+                    li.parentNode.removeChild(li);
+                    console.log('deleted item with id ' + id);
+                }  
             }
 
             // upon page load
