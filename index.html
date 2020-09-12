@@ -9,7 +9,7 @@
             body {
                 font-family: Calibri, Tahoma, Roboto, sans-serif;
                 background-color: #243447;
-                color: #F9E9E9;
+                color: #F9FBFB;
             }
             .container {
                 margin: auto;
@@ -40,6 +40,8 @@
                 border-radius: 2px;
                 margin-top: .5em;
                 padding: 0.3em;
+                border-radius: 10px;
+                width: 100px;
             }
 
             @keyframes fade-in {
@@ -73,17 +75,28 @@
                 width: 100%;
                 margin: 0.1em;
                 padding-bottom: 0.7em;
+                border-radius: 6px;
             }
 
             .delete-btn {
                 background-color: crimson;
-                color: #E9E9E9;
+                color: #FFFFFF;
+                font-weight: bold;
                 margin: 0.2em 1em 0.2em;
+                padding: 0.2em 0.55em 0.38em;
+                border-radius: 10px;
             }
+
+            .strike {
+                text-decoration: line-through;
+                color: #D9D9D9;
+            }
+
         </style>
     </head>
     <body>
         <div class="container">
+            <div id="top"></div>
             <h1>My To-Do List</h1>
             <input id="todo-title" type="text" name="todo-title" placeholder="title" required>
             <input id="todo-desc" type="text" name="todo-desc" placeholder="description">
@@ -106,7 +119,7 @@
             //         id: 2,
             //         title: 'foo',
             //         desc: 'bar',
-            //         done: true
+            //         done: true,
             //     }
             // ];
             // db.setItem("todos", JSON.stringify(todos));
@@ -128,7 +141,7 @@
                     this.title = title;
                     this.desc = desc;
                     this.done = false;
-                    this.dateCreated = new Date().toTimeString();
+                    this.dateCreated = new Date().toString();
                 }
             }
 
@@ -176,7 +189,7 @@
                 checkBox.setAttribute('type', 'checkbox');
 
                 let deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = 'delete';
+                deleteBtn.innerHTML = 'x';
                 deleteBtn.classList.add('delete-btn');
                 deleteBtn.setAttribute('onclick', 'deleteTodo(' + todo.id + ')');
 
@@ -191,23 +204,37 @@
 
                 div.appendChild(heading);
                 div.appendChild(p);
-                div.appendChild(dateSpan);
                 div.appendChild(document.createElement('hr'));
-                div.appendChild(checkBox);
                 
+                // div.appendChild(checkBox);
+                // let markDoneText = document.createTextNode('mark as done');
+                // div.appendChild(markDoneText);
 
-                let markDoneText = document.createTextNode('mark as done');
-                div.appendChild(markDoneText);
+                div.appendChild(dateSpan);
                 div.appendChild(deleteBtn);
 
                 console.log(todo.id);
                 li.appendChild(div);
                 li.setAttribute('id', 'todo-'+todo.id);
+
+                if(todo.done) {
+                    li.classList.add('strike');
+                }
+
+                li.addEventListener('click', () => {
+                    if(!li.classList.contains('strike')) {
+                        li.classList.add('strike');
+                    } else {
+                        li.classList.remove('strike');
+                    }
+                    toggleDone(todo.id);
+                });
+
                 return li;         
             }
 
             var toggleDone = (id) => {
-                console.log('updated');
+                console.log('updated ' + id);
                 let tempTodos = JSON.parse(db.getItem('todos'));
                 tempTodos.forEach((element, index) => {
                     if (element.id === id) {
