@@ -6,10 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- <link href="css/style.css" rel="stylesheet"> -->
         <style>
+            html {
+                display: table;
+                margin: auto;
+            }
             body {
                 font-family: Calibri, Tahoma, Roboto, sans-serif;
                 background-color: #243447;
                 color: #F9FBFB;
+                display: table-cell;
+                vertical-align: middle;
+            }
+            body > * {
+                margin: auto;
             }
             .container {
                 margin: auto;
@@ -17,21 +26,19 @@
                 flex-wrap: wrap;
                 flex-direction: column;
                 align-content: center;
-                
             }
             
             .container > * {
                 text-align: center;
-                width: 75%;
-                
+                width: 95%;
             }
 
             input[type="text"] {
                 margin: auto;
                 border-radius: 10px;
                 margin-bottom: 0.3em;
-                padding: 0.3em;
-                width: 55%
+                padding: 0.5em;
+                width: 60%
             }
             #add-todo {
                 background-color: #7186a0;
@@ -64,9 +71,8 @@
                 display: flex;
                 flex-direction: row;
                 flex-wrap: wrap-reverse;
+                align-content: center;
                 /* flex-flow: row wrap */
-                position: relative;
-                left: -1.2em;
             }
 
             .flex-item {
@@ -74,8 +80,9 @@
                 border: 1px solid black;
                 text-align: center;
                 width: 75%;
-                margin: 0.1em auto;
-                padding-bottom: 0.7em;
+                margin: auto;
+                margin-bottom: 0.4em;
+                padding: 0.1em 0.9em 0.7em;
                 border-radius: 6px;
             }
 
@@ -94,7 +101,7 @@
             }
 
             #top {
-                margin-top: 2em auto;
+                margin: 0.2em 0.6em 0.1em;
                 background-image: url("images/bg.jpg");
                 background-repeat: no-repeat;
                 background-size: 100%;
@@ -102,8 +109,7 @@
                 border-radius: 10px;
                 padding-top: 1.5em;
                 text-align: center;
-                position: relative;
-                left: 1.2em;
+                width: 95%;
             }
 
         </style>
