@@ -160,7 +160,7 @@ var db = window.localStorage;
                 let d = new Date();
                 let month = d.toLocaleString('default', { month: 'long' });
                 console.log(month);
-                let str = month + ' ' + d.getDay() + ', ' + d.getFullYear();
+                let str = month + ' ' + d.getDate() + ', ' + d.getFullYear();
                 return str;
             }
 
